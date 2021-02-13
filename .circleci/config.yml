@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   maven: circleci/maven@1.1.0
   docker: circleci/docker@1.5.0
+  heroku: circleci/heroku@1.2.5
 
 jobs:
   build_test:
@@ -23,6 +24,14 @@ jobs:
           root: "./"
           paths:
             - target/*.jar
+  heroku_deploy:
+    executor: heroku/default
+    steps:
+      - setup_remote_docker:
+          version: 19.03.13
+      - heroku/install
+      - heroku/check-authentication
+      - heroku/release-docker-image
 
 workflows:
   test_and_deploy:
@@ -36,3 +45,7 @@ workflows:
           docker-username: HEROKU_USERNAME
           docker-password: HEROKU_API_KEY
           registry: registry.heroku.com
+          tag: latest
+      - heroku_deploy:
+          requires:
+            - docker/publish
