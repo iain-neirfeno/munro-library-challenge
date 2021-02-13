@@ -2,11 +2,37 @@ version: 2.1
 
 orbs:
   maven: circleci/maven@1.1.0
+  docker: circleci/docker@1.5.0
+
+jobs:
+  build_test:
+    executor:
+      name: maven/default
+      tag: "14.0"
+    steps:
+      - checkout
+      - maven/with_cache:
+          steps:
+            - run:
+                command: mvn verify "$@"
+                name: Run Tests
+      - maven/process_test_results:
+          test_results_path: target/surefire-reports
+
+      - persist_to_workspace:
+          root: "./"
+          paths:
+            - target/*.jar
 
 workflows:
-  maven_test:
+  test_and_deploy:
     jobs:
-      - maven/test: # checkout, build, test, and upload test results
-          executor:
-            name: maven/default
-            tag: "14.0"
+      - build_test
+      - docker/publish:
+          requires:
+            - build_test
+          attach-at: "./"
+          image: $HEROKU_APP_NAME/web
+          docker-username: HEROKU_USERNAME
+          docker-password: HEROKU_API_KEY
+          registry: registry.heroku.com
