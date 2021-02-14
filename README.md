@@ -82,3 +82,9 @@ heroku container:release -a $HEROKU_APP_NAME web
 ## The Deployed Application
 
 The deployed application can be accessed at anytime at: https://munro-library-challenge.herokuapp.com
+
+## Swagger 2.0
+
+The application provides Swagger 2.0 documentation. This can be accessed directly at: 
+https://munro-library-challenge.herokuapp.com/v2/api-docs or using Swagger UI at:
+https://munro-library-challenge.herokuapp.com/swagger-ui/#/ This can be useful for understanding the API
