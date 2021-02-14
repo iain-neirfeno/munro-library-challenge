@@ -23,6 +23,8 @@ public class MunroComparator implements Comparator<Munro> {
 
             if ("name".equalsIgnoreCase(order.getProperty())) {
                 result = compare(order, left.getName(), right.getName());
+            }else if ("height".equalsIgnoreCase(order.getProperty())) {
+                result = compare(order, left.getHeight(), right.getHeight());
             } else {
                 throw new IllegalArgumentException(String.format("Unknown sort property %s", order.getProperty()));
             }
@@ -56,5 +58,17 @@ public class MunroComparator implements Comparator<Munro> {
             return 0;
 
         return leftComparedWithRight > 0 ? inversionOrderFactor : -1 * inversionOrderFactor;
+    }
+
+    private int compare(Sort.Order order, int left, int right){
+        int inversionOrderFactor = order.isAscending() ? 1 : -1;
+
+        if (left == right)
+            return 0;
+
+        if (left < right)
+            return inversionOrderFactor * -1;
+
+        return inversionOrderFactor;
     }
 }

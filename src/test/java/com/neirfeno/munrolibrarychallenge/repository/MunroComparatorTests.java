@@ -98,4 +98,84 @@ public class MunroComparatorTests {
 
         assertEquals(-1, testSubject.compare(left, right), "Expect nulls first when desc order");
     }
+
+    @Test
+    public void comparesByHeight(){
+        Sort sort = Sort.by("height");
+        MunroComparator testSubject = new MunroComparator(sort);
+        Munro left = new Munro("", 1, HillCategory.MUNRO, "");
+        Munro right = new Munro("", 2, HillCategory.MUNRO, "");
+
+        assertEquals(-1, testSubject.compare(left, right), "Expect left (1) before right (2) by default");
+    }
+
+    @Test
+    public void comparesByHeightDesc(){
+        Sort sort = Sort.by(Sort.Direction.DESC, "height");
+        MunroComparator testSubject = new MunroComparator(sort);
+        Munro left = new Munro("", 1, HillCategory.MUNRO, "");
+        Munro right = new Munro("", 2, HillCategory.MUNRO, "");
+
+        assertEquals(1, testSubject.compare(left, right), "Expect right (2) before left (1) when desc");
+    }
+
+    @Test
+    public void comparesByHeightSameHeight(){
+        Sort sort = Sort.by("height");
+        MunroComparator testSubject = new MunroComparator(sort);
+        Munro left = new Munro("", 1, HillCategory.MUNRO, "");
+        Munro right = new Munro("", 1, HillCategory.MUNRO, "");
+
+        assertEquals(0, testSubject.compare(left, right), "Expect both equal when same height");
+    }
+
+    @Test
+    public void comparesByHeightThenName(){
+        Sort sort = Sort.by("height", "name");
+        MunroComparator testSubject = new MunroComparator(sort);
+        Munro left = new Munro("B", 1, HillCategory.MUNRO, "");
+        Munro right = new Munro("A", 2, HillCategory.MUNRO, "");
+
+        assertEquals(-1, testSubject.compare(left, right), "Expect left (B,1) before right (A,2) when height first");
+    }
+
+    @Test
+    public void comparesByNameThenHeight(){
+        Sort sort = Sort.by("name", "height");
+        MunroComparator testSubject = new MunroComparator(sort);
+        Munro left = new Munro("B", 1, HillCategory.MUNRO, "");
+        Munro right = new Munro("A", 2, HillCategory.MUNRO, "");
+
+        assertEquals(1, testSubject.compare(left, right), "Expect right (A,2) before left (B,1) when name first");
+    }
+
+    @Test
+    public void comparesByHeightThenNameHeightSame(){
+        Sort sort = Sort.by("height", "name");
+        MunroComparator testSubject = new MunroComparator(sort);
+        Munro left = new Munro("B", 1, HillCategory.MUNRO, "");
+        Munro right = new Munro("A", 1, HillCategory.MUNRO, "");
+
+        assertEquals(1, testSubject.compare(left, right), "Expect right (A,2) before left (B,1) when height same");
+    }
+
+    @Test
+    public void comparesByNameThenHeightNameSame(){
+        Sort sort = Sort.by("name", "height");
+        MunroComparator testSubject = new MunroComparator(sort);
+        Munro left = new Munro("A", 1, HillCategory.MUNRO, "");
+        Munro right = new Munro("A", 2, HillCategory.MUNRO, "");
+
+        assertEquals(-1, testSubject.compare(left, right), "Expect left (B,1) before right (A,2) when name same");
+    }
+
+    @Test
+    public void comparesByNameThenHeightNameSameHeightDesc(){
+        Sort sort = Sort.by(Sort.Order.by("name"), Sort.Order.desc("height"));
+        MunroComparator testSubject = new MunroComparator(sort);
+        Munro left = new Munro("A", 1, HillCategory.MUNRO, "");
+        Munro right = new Munro("A", 2, HillCategory.MUNRO, "");
+
+        assertEquals(1, testSubject.compare(left, right), "Expect right (A,2) before left (B,1) when name same and height desc");
+    }
 }
