@@ -162,6 +162,30 @@ public class WebMockMunroTests {
     }
 
     @Test
+    public void testGetByCategoryIgnoreCase() throws Exception {
+
+        when(repo.findBy(
+                argThat(Pageable::isUnpaged), eq(HillCategory.MUNRO), isNull(), isNull()))
+                .thenReturn(new MunroPageBuilder()
+                        .add("albert", 1000, HillCategory.MUNRO, "NN0001").build(Pageable.unpaged()));
+
+        mvc.perform(get("/munros?category=MuNrO")).andDo(print()).andExpect(status().isOk()).andExpect(
+                content().json("[{'name':'albert','height':1000,'hillCategory':'MUNRO','gridReference':'NN0001'}]"));
+    }
+
+    @Test
+    public void testGetByCategorySpecifyEither() throws Exception {
+
+        when(repo.findBy(
+                argThat(Pageable::isUnpaged), isNull(), isNull(), isNull()))
+                .thenReturn(new MunroPageBuilder()
+                        .add("albert", 1000, HillCategory.MUNRO, "NN0001").build(Pageable.unpaged()));
+
+        mvc.perform(get("/munros?category=either")).andDo(print()).andExpect(status().isOk()).andExpect(
+                content().json("[{'name':'albert','height':1000,'hillCategory':'MUNRO','gridReference':'NN0001'}]"));
+    }
+
+    @Test
     public void testGetByMinHeight() throws Exception {
 
         when(repo.findBy(
