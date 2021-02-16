@@ -3,16 +3,30 @@ package com.neirfeno.munrolibrarychallenge.rest.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
 @Setter
 public class OrderRequest {
     private String order;
+
+    public Sort asSort(){
+        if (order == null)
+            return Sort.unsorted();
+
+        return Sort.by(getPropertiesWithDirection().map(p -> {
+            Sort.Order sortOrder = Sort.Order.by(p.property);
+            if (StringUtils.hasText(p.direction))
+                sortOrder = sortOrder.with("desc".equalsIgnoreCase(p.direction) ? Sort.Direction.DESC : Sort.Direction.ASC);
+            return sortOrder;
+        }).collect(Collectors.toUnmodifiableList()));
+    }
 
     public Stream<PropertyDirectionRequest> getPropertiesWithDirection(){
         if (!StringUtils.hasText(order))

@@ -57,6 +57,18 @@ public class OrderRequestTests {
                 testSubject.getPropertiesWithDirection().collect(Collectors.toUnmodifiableList()));
     }
 
+    @Test
+    public void testConvertsPropertiesWithDirectionToSortOrder(){
+        OrderRequest testSubject = new OrderRequest();
+        testSubject.setOrder("name;desc,other,dave;asc");
+
+        assertEquals(
+                new PropertyDirectionBuilder().add("name", "desc")
+                        .add("other")
+                        .add("dave", "asc").build(),
+                testSubject.getPropertiesWithDirection().collect(Collectors.toUnmodifiableList()));
+    }
+
     private static class PropertyDirectionBuilder {
         private final List<OrderRequest.PropertyDirectionRequest> list = new ArrayList<>();
 
