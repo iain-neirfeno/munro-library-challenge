@@ -88,3 +88,55 @@ The deployed application can be accessed at anytime at: https://munro-library-ch
 The application provides Swagger 2.0 documentation. This can be accessed directly at: 
 https://munro-library-challenge.herokuapp.com/v2/api-docs or using Swagger UI at:
 https://munro-library-challenge.herokuapp.com/swagger-ui/#/ This can be useful for understanding the API
+
+
+## The API
+
+_It is advisable to use the Swagger UI to determine the correct structure for the requests._
+
+### GET /munros
+
+This path provides access to the full list of Munros in the CSV file. It offers the option to then page, filter, and order the results.
+
+#### Paging
+
+Two parameters are required to page the results:
+
+- `page` - this is the zero indexed page number, this should initially be `0`
+- `limit` - this is the maximum number of munros to return in a single request. This must be greater than `0`
+
+The result will have the HTTP Header `Link` that follows RFC8288 (Section 3) and is in the format:
+
+```
+<{url}> rel="{relation}"
+```
+
+where the `{url}` component is the URL to be followed, and the `{relation}` component is the relation of that page to this, one of `prev`, `next`, `first`, `last`
+
+#### Ordering
+
+It is possible to order the response by either name, height, or both (where the order of the components dictate the preference in ordering).
+The format for this parameter is:
+
+```
+{property};{direction}
+```
+
+Property must be one of `name` or `height`, and direction one of `asc` or `desc`, or can be omitted completely. Multiple orders should be comma separated.
+
+This parameter should be passed as `order`
+
+#### Querying
+
+There are 3 query parameters:
+
+- `category` - filter by hill category, this should be one of `MUNRO`, `TOP`
+- `minHeight` - filter by a minimum inclusive height.
+- `maxHeight` - filter by a maximum inclusive height.
+
+### Some example queries:
+
+- https://munro-library-challenge.herokuapp.com/munros - the full dataset
+- https://munro-library-challenge.herokuapp.com/munros?page=0&limit=10 - the full dataset paged
+- https://munro-library-challenge.herokuapp.com/munros?page=0&limit=10&order=height;desc,name - the full dataset paged and ordered by height descending and then by name ascending
+- https://munro-library-challenge.herokuapp.com/munros?order=name&category=MUNRO&minHeight=918&maxHeight=918 - all 918m munros ordered by name ascending.
