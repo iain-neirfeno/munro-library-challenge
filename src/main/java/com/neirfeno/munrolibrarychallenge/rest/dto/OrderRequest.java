@@ -1,5 +1,6 @@
 package com.neirfeno.munrolibrarychallenge.rest.dto;
 
+import com.neirfeno.munrolibrarychallenge.rest.validator.IsOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,9 @@ import java.util.stream.Stream;
 
 @Getter
 @Setter
+@IsOrder(properties = { "name", "height" }, message = "Order should be in the format <property>;<direction> where" +
+        " property is one of 'name' or 'height' and direction is one of 'asc', or 'desc'. Direction can be omitted" +
+        " and multiple orders supplied comma separated.")
 public class OrderRequest {
     private String order;
 
